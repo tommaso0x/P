@@ -1,0 +1,38 @@
+# CI della libreria: esegue i test degli strumenti e verifica che il catalogo
+# (CATALOG.md, catalog.json) sia valido e aggiornato rispetto ai metadati.
+# Gira su Linux e su Windows (il sistema su cui si usa MultiCharts).
+name: Validazione
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Test e verifica del catalogo (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout del repository
+        uses: actions/checkout@v4
+
+      - name: Installazione di Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Test degli strumenti (unittest)
+        run: python -m unittest discover -s tools/tests -v
+
+      - name: Validazione metadati e verifica catalogo aggiornato
+        run: python tools/build_catalog.py --check

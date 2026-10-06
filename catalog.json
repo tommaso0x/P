@@ -1,0 +1,158 @@
+{
+  "entries": [
+    {
+      "created": "2026-10-06",
+      "depends_on": [
+        "bll-ma-band-signal"
+      ],
+      "language": "PowerLanguage",
+      "markets": [
+        "indici azionari"
+      ],
+      "name": "BLL1992 MA Band",
+      "papers": [
+        "1992-brock-lakonishok-lebaron-simple-technical-trading-rules"
+      ],
+      "path": "indicators/bll1992-ma-band/README.md",
+      "slug": "bll1992-ma-band",
+      "source_file": "BLL1992_MA_Band.pl",
+      "status": "draft",
+      "summary": "Media breve, media lunga e bande (1 ± b) delle regole di media mobile di Brock, Lakonishok e LeBaron (1992), con la media breve colorata dal segnale +1 / -1 / 0.",
+      "tags": [
+        "moving-average",
+        "band",
+        "trend-following",
+        "overlay"
+      ],
+      "timeframes": [
+        "daily"
+      ],
+      "type": "indicator",
+      "updated": "2026-10-06",
+      "version": "1.0.0"
+    },
+    {
+      "created": "2026-10-06",
+      "depends_on": [
+        "bll-ma-band-signal"
+      ],
+      "language": "PowerLanguage",
+      "markets": [
+        "indici azionari"
+      ],
+      "name": "BLL1992 MA Crossover",
+      "papers": [
+        "1992-brock-lakonishok-lebaron-simple-technical-trading-rules"
+      ],
+      "path": "strategies/bll1992-ma-crossover/README.md",
+      "slug": "bll1992-ma-crossover",
+      "source_file": "BLL1992_MA_Crossover.pl",
+      "status": "draft",
+      "summary": "Regole di media mobile VMA (HoldDays = 0) e FMA (HoldDays > 0) di Brock, Lakonishok e LeBaron (1992), con banda e opzione short, ordini next bar at market.",
+      "tags": [
+        "moving-average",
+        "trend-following",
+        "vma",
+        "fma",
+        "band"
+      ],
+      "timeframes": [
+        "daily"
+      ],
+      "type": "strategy",
+      "updated": "2026-10-06",
+      "version": "1.0.0"
+    },
+    {
+      "created": "2026-10-06",
+      "depends_on": [],
+      "language": "PowerLanguage",
+      "markets": [
+        "indici azionari"
+      ],
+      "name": "BLL1992 Trading Range Breakout",
+      "papers": [
+        "1992-brock-lakonishok-lebaron-simple-technical-trading-rules"
+      ],
+      "path": "strategies/bll1992-trading-range-breakout/README.md",
+      "slug": "bll1992-trading-range-breakout",
+      "source_file": "BLL1992_Trading_Range_Breakout.pl",
+      "status": "draft",
+      "summary": "Regola TRB di Brock, Lakonishok e LeBaron (1992), breakout del massimo o minimo delle chiusure delle ultime Length barre con banda e holding fisso, ordini next bar at market.",
+      "tags": [
+        "breakout",
+        "trading-range",
+        "support-resistance",
+        "trend-following",
+        "band"
+      ],
+      "timeframes": [
+        "daily"
+      ],
+      "type": "strategy",
+      "updated": "2026-10-06",
+      "version": "1.0.0"
+    },
+    {
+      "created": "2026-10-06",
+      "depends_on": [],
+      "language": "PowerLanguage",
+      "name": "BLL_MA_Band_Signal",
+      "papers": [
+        "1992-brock-lakonishok-lebaron-simple-technical-trading-rules"
+      ],
+      "path": "functions/bll-ma-band-signal/README.md",
+      "slug": "bll-ma-band-signal",
+      "source_file": "BLL_MA_Band_Signal.pl",
+      "status": "draft",
+      "summary": "Segnale +1 / -1 / 0 dal confronto tra media mobile breve e media lunga con banda percentuale, nucleo delle regole VMA e FMA di Brock, Lakonishok e LeBaron (1992).",
+      "tags": [
+        "moving-average",
+        "band",
+        "signal",
+        "trend-following"
+      ],
+      "type": "function",
+      "updated": "2026-10-06",
+      "version": "1.0.0"
+    }
+  ],
+  "generated_by": "tools/build_catalog.py",
+  "papers": [
+    {
+      "added": "2026-10-06",
+      "authors": [
+        "William Brock",
+        "Josef Lakonishok",
+        "Blake LeBaron"
+      ],
+      "doi": "10.1111/j.1540-6261.1992.tb04681.x",
+      "id": "1992-brock-lakonishok-lebaron-simple-technical-trading-rules",
+      "implementations": [
+        "bll1992-ma-band",
+        "bll1992-ma-crossover",
+        "bll1992-trading-range-breakout",
+        "bll-ma-band-signal"
+      ],
+      "issue": 5,
+      "journal": "The Journal of Finance",
+      "pages": "1731-1764",
+      "path": "papers/1992-brock-lakonishok-lebaron-simple-technical-trading-rules/README.md",
+      "publisher": "Wiley",
+      "status": "extracted",
+      "summary": "Test di regole di media mobile (VMA, FMA) e trading range breakout sul Dow Jones 1897-1986, con bootstrap contro random walk, AR(1), GARCH-M ed EGARCH.",
+      "tags": [
+        "technical-analysis",
+        "moving-average",
+        "trading-range-breakout",
+        "bootstrap",
+        "dow-jones"
+      ],
+      "title": "Simple Technical Trading Rules and the Stochastic Properties of Stock Returns",
+      "type": "paper",
+      "url": "https://doi.org/10.1111/j.1540-6261.1992.tb04681.x",
+      "volume": 47,
+      "year": 1992
+    }
+  ]
+}

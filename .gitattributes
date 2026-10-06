@@ -1,0 +1,15 @@
+* text=auto
+# PowerLanguage è Pascal-like; evita la classificazione Perl su GitHub
+*.pl   text linguist-language=Pascal
+*.cs   text
+*.md   text
+*.py   text
+*.csv  text
+*.html text
+*.pla  binary
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.xlsx binary
+# Opzionale: Git LFS per PDF pesanti
+# *.pdf filter=lfs diff=lfs merge=lfs -text
