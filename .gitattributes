@@ -6,10 +6,15 @@
 *.py   text
 *.csv  text
 *.html text
+# Script Windows: CRLF anche nel repository (cmd.exe e PowerShell li vogliono cosi')
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
 *.pla  binary
 *.pdf  binary
 *.png  binary
 *.jpg  binary
 *.xlsx binary
+*.ico  binary
 # Opzionale: Git LFS per PDF pesanti
 # *.pdf filter=lfs diff=lfs merge=lfs -text

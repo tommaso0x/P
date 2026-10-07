@@ -24,3 +24,9 @@ desktop.ini
 # File temporanei e di backup
 *.bak
 *.tmp
+
+# Generati localmente da tools/render_html.py (catalogo come pagina web): non si versionano
+catalog.html
+
+# Windows: collegamenti sul desktop creati da avvia.bat / crea_collegamento.ps1
+*.lnk

@@ -14,9 +14,13 @@ collegamenti siano coerenti e produce il catalogo.
 - `papers/` — schede delle fonti (paper, libri, capitoli, articoli, tesi, pagine web), una per cartella,
   con note di estrazione; il PDF locale è opzionale.
 - `CATALOG.md` e `catalog.json` — il catalogo di tutto quanto sopra, **generato** da
-  `tools/build_catalog.py`: non va modificato a mano.
+  `tools/build_catalog.py`: non va modificato a mano. `catalog.html` è lo stesso catalogo come
+  **pagina web locale** (ricerca, filtri per tag, pulsante "Copia codice"), generato da
+  `tools/render_html.py` e ignorato da git.
 - `templates/` — modelli con placeholder usati da `tools/new_entry.py`.
-- `docs/` — convenzioni, flusso di lavoro, istruzioni per il PowerLanguage Editor.
+- `avvia.bat` e `tools/windows/` — avvio "a un clic" su Windows: menu in italiano, installazione
+  su un PC nuovo, icona sul desktop (vedi [docs/WINDOWS.md](docs/WINDOWS.md)).
+- `docs/` — guida Windows, convenzioni, flusso di lavoro, istruzioni per il PowerLanguage Editor.
 
 Ogni cartella di codice contiene almeno `README.md` (scheda con metadati YAML) e il sorgente `.pl` in
 testo semplice, da incollare nel PowerLanguage Editor; opzionalmente l'archivio `.pla` esportato,
@@ -29,12 +33,15 @@ opzionalmente, il PDF (`pdf:`) e `notes.md`.
 ```
 P/
 ├── README.md                     # questa panoramica
+├── avvia.bat                     # LAUNCHER Windows (doppio clic / icona sul desktop): menu in italiano
 ├── CATALOG.md                    # GENERATO da tools/build_catalog.py — non editare a mano
 ├── catalog.json                  # GENERATO — stesso contenuto in JSON
-├── .gitignore
-├── .gitattributes                # .pl/.cs/.md/.py/.csv/.html come testo; .pla/.pdf/.png/.jpg/.xlsx come binari
+├── catalog.html                  # generato localmente da tools/render_html.py — ignorato da git
+├── .gitignore                    # ignora anche catalog.html e i collegamenti *.lnk
+├── .gitattributes                # testo LF: .pl/.cs/.md/.py/.csv/.html; testo CRLF: .bat/.cmd/.ps1; binari: .pla/.pdf/.png/.jpg/.xlsx/.ico
 ├── .editorconfig
 ├── docs/
+│   ├── WINDOWS.md                # avvio a un clic su Windows: installa.bat, menu di avvia.bat, icona, problemi frequenti
 │   ├── CONVENZIONI.md            # naming, schema metadati completo, stati, versioning, stile codice
 │   ├── WORKFLOW.md               # dal paper al codice: estrazione → funzione → indicatore → strategia → test
 │   └── MULTICHARTS.md            # come importare/esportare in PowerLanguage Editor, dipendenze, .pla vs .pl
@@ -58,13 +65,64 @@ P/
 ├── tools/
 │   ├── build_catalog.py          # valida metadati + genera CATALOG.md e catalog.json
 │   ├── new_entry.py              # crea una nuova voce dai template
+│   ├── render_html.py            # genera catalog.html: catalogo come pagina web locale con "Copia codice"
+│   ├── wizard.py                 # procedura guidata in italiano che prepara ed esegue new_entry.py
+│   ├── windows/
+│   │   ├── installa.bat          # installazione su un PC nuovo: controlla git/python, clona, crea l'icona, apre il menu
+│   │   ├── crea_collegamento.ps1 # crea "Libreria PowerLanguage.lnk" sul desktop (punta ad avvia.bat)
+│   │   ├── libreria.ico          # icona del collegamento (binario, generato da make_icon.py)
+│   │   └── make_icon.py          # genera libreria.ico in modo riproducibile (solo stdlib)
 │   └── tests/
 │       ├── __init__.py
-│       └── test_tools.py         # unittest (stdlib) per entrambi gli script
+│       ├── test_tools.py         # unittest (stdlib) per build_catalog.py e new_entry.py
+│       ├── test_render_html.py   # unittest per render_html.py (e per l'ICO prodotto da make_icon.py)
+│       └── test_wizard.py        # unittest per wizard.py
 └── .github/workflows/validate.yml  # CI (Linux e Windows): test + build_catalog --check
 ```
 
-## Avvio rapido
+## Avvio rapido su Windows: icona sul desktop
+
+Su Windows non serve il terminale: un'icona sul desktop apre un menu in italiano che fa tutto
+(catalogo come pagina web con il pulsante "Copia codice", procedura guidata per le nuove voci,
+aggiornamento e salvataggio su GitHub, verifica). Requisiti: Windows 10/11, Git for Windows e
+Python 3.10 o successivo; se mancano, la procedura propone di installarli con `winget`. La guida
+completa, con i problemi frequenti, è [docs/WINDOWS.md](docs/WINDOWS.md).
+
+1. **Scaricare `installa.bat`** (un solo file) da
+   <https://raw.githubusercontent.com/tommaso0x/P/claude/powerlanguage-library-indicators-brr3a5/tools/windows/installa.bat>
+   (nel browser: tasto destro → *Salva con nome*, lasciando il nome `installa.bat`). La parte
+   `claude/powerlanguage-library-indicators-brr3a5` dell'indirizzo è il **nome del ramo**: se il
+   ramo viene rinominato o unito in `main`, va sostituita con il nome nuovo. In alternativa, chi ha
+   già clonato il repository (`git clone https://github.com/tommaso0x/P.git`) fa semplicemente
+   doppio clic su `avvia.bat` nella cartella clonata.
+2. **Doppio clic su `installa.bat`.** Controlla che Git e Python siano presenti (se mancano propone
+   `winget install -e --id Python.Python.3.12` e `winget install -e --id Git.Git`), chiede la
+   cartella di destinazione (Invio = `%USERPROFILE%\Documents\Libreria-PowerLanguage`), scarica la
+   libreria con `git clone https://github.com/tommaso0x/P.git` (se la cartella contiene già la
+   libreria la aggiorna con `git pull --ff-only`), crea l'icona e apre il menu. Se il repository è
+   privato, al primo download Git Credential Manager chiede di accedere a GitHub.
+3. **L'icona "Libreria PowerLanguage" compare sul desktop.** Un doppio clic apre il menu di
+   `avvia.bat`. L'icona si può ricreare in qualunque momento con la voce `7` del menu o con
+   `avvia.bat icona`.
+4. **Cosa fa il menu** (`avvia.bat`; all'avvio mostra cartella, ramo, modifiche non salvate,
+   versione di Python e se Git è disponibile):
+
+   | Voce | Cosa fa |
+   |---|---|
+   | `1` Apri il catalogo (pagina web locale) | rigenera `catalog.html` con `tools\render_html.py --open` e lo apre nel browser: ricerca, filtri per tag, pulsante **Copia codice** per ogni voce |
+   | `2` Apri la cartella della libreria | apre la cartella in Esplora file |
+   | `3` Nuova voce (procedura guidata) | `tools\wizard.py`: domande in italiano, poi crea la voce chiamando `new_entry.py` |
+   | `4` Aggiorna da GitHub (git pull) | `git pull --ff-only` |
+   | `5` Salva su GitHub (commit + push) | rigenera il catalogo, `git add -A`, chiede il messaggio di commit (Invio = `Aggiornamento libreria <data>`), chiede nome ed e-mail per git se mancano, `git commit`, `git push` (`git push -u origin HEAD` al primo invio) |
+   | `6` Verifica (test + catalogo) | `python -m unittest discover -s tools\tests` e `python tools\build_catalog.py --check` |
+   | `7` Crea/aggiorna l'icona sul desktop | `tools\windows\crea_collegamento.ps1` |
+   | `8` Apri la pagina GitHub del repository | apre <https://github.com/tommaso0x/P> nel browser |
+   | `0` Esci | |
+
+   Senza passare dal menu: `avvia.bat catalogo` rigenera e apre il catalogo, `avvia.bat icona` crea
+   o aggiorna solo l'icona.
+
+## Avvio rapido da terminale
 
 Requisiti: Python ≥ 3.10, nessuna dipendenza esterna. Tutti i comandi si lanciano dalla radice del
 repository.
@@ -137,7 +195,9 @@ Il riferimento completo è [docs/CONVENZIONI.md](docs/CONVENZIONI.md).
   `docs:`, `tools:`), catalogo rigenerato in ogni commit: [docs/CONVENZIONI.md §12](docs/CONVENZIONI.md#12-git).
 - **Windows.** I file di testo sono normalizzati a LF nel repository (`.gitattributes`); nel working
   copy possono essere CRLF con `core.autocrlf=true`; il PowerLanguage Editor accetta entrambi quando
-  si incolla il codice.
+  si incolla il codice. Fanno eccezione gli script `.bat`, `.cmd` e `.ps1`, che sono CRLF anche nel
+  repository (`eol=crlf`) e contengono solo caratteri ASCII. L'uso "a un clic" (icona, menu) è
+  descritto in [docs/WINDOWS.md](docs/WINDOWS.md).
 
 ## Catalogo
 
@@ -153,6 +213,13 @@ python -c "import json;[print(e['path']) for e in json.load(open('catalog.json')
 Entrambi sono **generati** da `python tools/build_catalog.py` e non vanno modificati a mano:
 ogni modifica va fatta nelle schede e poi si rigenera il catalogo. La CI esegue
 `build_catalog.py --check` e fallisce se i metadati non sono validi o il catalogo non è aggiornato.
+
+Lo stesso catalogo si consulta anche come **pagina web locale**: `python tools/render_html.py --open`
+genera `catalog.html` nella radice (una sola pagina, senza risorse esterne, funziona da `file://`)
+e lo apre nel browser, con ricerca, filtri per tag e, per ogni voce di codice, i pulsanti
+**Copia codice**, **Mostra codice**, **Scheda**, **Apri cartella** e **Apri .pl**. `catalog.html` è
+generato localmente e ignorato da git (non fa parte di `--check`): su Windows lo apre la voce `1`
+del menu di `avvia.bat`.
 
 ## Esempio incluso
 
@@ -185,7 +252,10 @@ PDF o testo protetto da copyright sia nel repository **o nella sua storia** (ved
 |---|---|
 | `tools/build_catalog.py` | Valida i metadati di tutte le voci e genera `CATALOG.md` e `catalog.json`. |
 | `tools/new_entry.py` | Crea una nuova voce (indicatore, strategia, funzione o fonte) copiando il template e sostituendo i placeholder. |
-| `tools/tests/test_tools.py` | Test `unittest` (stdlib) per entrambi gli script. |
+| `tools/render_html.py` | Genera `catalog.html`, il catalogo come pagina web locale (ricerca, tag, "Copia codice", schede e sorgenti in pagina); ignorato da git. |
+| `tools/wizard.py` | Procedura guidata in italiano: fa le domande, mostra il comando `new_entry.py` equivalente e lo esegue dopo conferma. |
+| `tools/windows/` | Avvio a un clic su Windows: `installa.bat` (installazione su un PC nuovo), `crea_collegamento.ps1` (icona sul desktop), `libreria.ico` e `make_icon.py` (l'icona e il suo generatore). Il menu è `avvia.bat` nella radice. |
+| `tools/tests/` | Test `unittest` (stdlib): `test_tools.py` (build_catalog, new_entry), `test_render_html.py` (render_html, make_icon), `test_wizard.py` (wizard). |
 
 Requisiti: Python ≥ 3.10, solo libreria standard (nessuna dipendenza da installare: il front matter è letto da un parser integrato, PyYAML non è
 usato).
@@ -269,6 +339,83 @@ Comportamento:
   percorsi creati e i passi successivi: compilare la scheda, incollare il codice, eseguire
   `build_catalog.py`.
 
+### `tools/render_html.py`
+
+```bash
+python tools/render_html.py                 # valida, rigenera CATALOG.md/catalog.json se non aggiornati, scrive catalog.html
+python tools/render_html.py --open          # ...e apre la pagina nel browser predefinito
+python tools/render_html.py --out X.html    # percorso di uscita diverso (i link relativi vengono adattati)
+python tools/render_html.py --root <path>   # radice del repository (default: cartella padre di tools/)
+python tools/render_html.py --quiet         # non stampa avvisi e messaggi informativi
+python tools/render_html.py --stamp         # aggiunge la riga "Generato il ..." (senza, l'output è deterministico)
+python tools/render_html.py --no-catalog    # non rigenera CATALOG.md e catalog.json anche se non aggiornati
+```
+
+Comportamento:
+
+- Non rilegge i metadati per conto suo: importa `tools/build_catalog.py` e ne usa caricatore,
+  validatore e renderer. Se ci sono errori di validazione li stampa (`ERRORE ...`) ed esce con
+  codice 1 senza scrivere nulla.
+- Legge, oltre a `catalog.json`, il corpo di ogni scheda `README.md` (dopo il front matter) e il
+  sorgente di ogni voce di codice, e produce **una sola pagina** `catalog.html` autosufficiente (CSS
+  e JavaScript inline, nessuna risorsa esterna, funziona da `file://`), in italiano, chiara/scura
+  secondo il sistema, leggibile anche da telefono.
+- Struttura: intestazione con titolo, conteggi, casella di ricerca (filtra le schede per testo) e
+  tag cliccabili (filtrano); sezioni **Indicatori**, **Strategie**, **Funzioni**, **Fonti**. Ogni
+  scheda di codice mostra nome, tipo, stato, versione, linguaggio se diverso da PowerLanguage,
+  sintesi, tag, **Fonti** e **Dipendenze** (link interni alla pagina) e i pulsanti **Copia codice**
+  (copia tutto il `.pl` negli appunti e conferma con "Copiato!"), **Mostra codice**, **Scheda** (la
+  `README.md` resa in HTML), **Apri cartella**, **Apri .pl**. Ogni scheda di fonte mostra titolo,
+  autori, anno, tipo, stato, rivista/volume/numero/pagine se presenti, link DOI/URL (in una nuova
+  scheda del browser), tag, **Implementazioni** (link interni), **Scheda**, e i link a `notes.md`
+  e al PDF se presenti.
+- Il Markdown delle schede è reso da un renderer minimo integrato (intestazioni, paragrafi, elenchi,
+  tabelle, blocchi di codice, citazioni, codice in linea, grassetto, corsivo, link); tutto il resto
+  è protetto con escape HTML e il renderer non si interrompe su input strani. L'output è
+  deterministico (nessun timestamp senza `--stamp`).
+- `catalog.html` è un file **locale**: `.gitignore` lo esclude e `build_catalog.py --check` non lo
+  considera. Si rigenera quando serve.
+
+### `tools/wizard.py`
+
+```bash
+python tools/wizard.py                      # procedura guidata interattiva, in italiano
+python tools/wizard.py --root <path>        # radice del repository (default: cartella padre di tools/)
+python tools/wizard.py --dry-run            # mostra cosa verrebbe creato senza scrivere (passato a new_entry.py)
+python tools/wizard.py --date AAAA-MM-GG    # data da scrivere nei metadati (default: oggi)
+```
+
+Fa una domanda alla volta: tipo di voce (`1` indicatore, `2` strategia, `3` funzione, `4` fonte);
+nome (o titolo); per le voci di codice le fonti scelte da un elenco numerato delle fonti esistenti
+(più numeri separati da virgola, Invio per nessuna, oppure un nuovo id), le dipendenze dall'elenco
+numerato delle funzioni esistenti, i tag (separati da virgola, con i tag già in uso come
+suggerimento) e la sintesi in una riga; per le fonti autori, anno, tipo
+(`paper`/`book`/`chapter`/`article`/`thesis`/`web`), DOI, URL, tag e sintesi. Per le funzioni
+avverte che il nome deve essere un identificatore PowerLanguage valido (lettere, cifre e `_`, non
+può iniziare con una cifra) e rifiuta gli altri; un nome vuoto viene richiesto. Propone lo slug (o
+l'id) derivato, modificabile con Invio per accettarlo, poi mostra il comando `new_entry.py` esatto,
+chiede conferma e chiama `new_entry.main([...])` nello stesso processo. Al termine elenca i file creati e i passi successivi (compilare la scheda,
+incollare il codice nel `.pl`, eseguire la voce `6 Verifica` del menu) e, su Windows, propone di
+aprire la cartella. Ctrl+C esce in modo pulito con un messaggio. Su Windows è la voce `3` del menu
+di `avvia.bat`.
+
+### `avvia.bat` e `tools/windows/`
+
+```bat
+avvia.bat                 :: menu (voci 1-8, 0 per uscire)
+avvia.bat catalogo        :: rigenera e apre il catalogo, poi esce
+avvia.bat icona           :: crea/aggiorna solo l'icona sul desktop, poi esce
+tools\windows\installa.bat   :: installazione su un PC nuovo (da scaricare e avviare con doppio clic)
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\windows\crea_collegamento.ps1 -Repo "<cartella>"
+python tools\windows\make_icon.py   :: rigenera libreria.ico (riproducibile)
+```
+
+`crea_collegamento.ps1` crea sul desktop (anche se spostato su OneDrive) il collegamento
+`Libreria PowerLanguage.lnk`, che avvia `avvia.bat` nella cartella della libreria con l'icona
+`tools/windows/libreria.ico`; senza `-Repo` usa la cartella padre di `tools/windows/`. Gli script
+`.bat`/`.ps1` sono in ASCII e con fine riga CRLF. Tutto il resto, compresi i problemi frequenti, è
+in [docs/WINDOWS.md](docs/WINDOWS.md).
+
 ### Test e CI
 
 ```bash
@@ -277,4 +424,5 @@ python tools/build_catalog.py --check
 ```
 
 Gli stessi due comandi sono eseguiti dalla CI (`.github/workflows/validate.yml`) a ogni push e pull
-request, su Linux e su Windows.
+request, su Linux e su Windows; su Windows li lancia anche la voce `6 Verifica (test + catalogo)` del
+menu di `avvia.bat`. `python -m unittest discover` trova tutti i file `tools/tests/test_*.py`.

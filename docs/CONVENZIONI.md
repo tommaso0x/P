@@ -5,7 +5,9 @@ descritto qui viene verificato, dove possibile, da `tools/build_catalog.py`: una
 produce un `ERRORE <percorso>: <messaggio>` e il catalogo non viene generato.
 
 `CATALOG.md` e `catalog.json` sono **generati** da `python tools/build_catalog.py` e non vanno
-modificati a mano.
+modificati a mano. Anche `catalog.html` (lo stesso catalogo come pagina web locale, generato da
+`python tools/render_html.py`) è generato e non si modifica a mano, ma a differenza degli altri due
+è **ignorato da git**: non si committa e si rigenera quando serve.
 
 ## 1. Contenuto di una voce
 
@@ -31,6 +33,12 @@ modificati a mano.
 superano circa 30 righe, il dettaglio va spostato in `notes.md` nella stessa cartella; nel
 `README.md` resta una sintesi seguita dal link `Note estese: [notes.md](notes.md)`. `notes.md` è
 Markdown libero, senza front matter: il validatore non lo legge.
+
+**File generati nella radice.** `CATALOG.md` e `catalog.json` sono generati da
+`tools/build_catalog.py` e **versionati** (la CI controlla con `--check` che siano aggiornati).
+`catalog.html` è generato da `tools/render_html.py` (voce `1` del menu di `avvia.bat` su Windows,
+vedi [WINDOWS.md](WINDOWS.md)) ed è **ignorato da git** (`.gitignore`), come i collegamenti `*.lnk`
+creati sul desktop: è un file locale, non fa parte di `--check` e si rigenera quando serve.
 
 ## 2. Nomi di cartelle e file
 
@@ -370,7 +378,7 @@ Input, Dipendenze, Note. Esempio:
   `git rm`; rimuoverlo davvero richiede di riscrivere la storia (e di forzare il push). In caso di
   dubbio tenere il PDF fuori dal repository (cartella locale, oppure un Git LFS privato) e lasciare
   nella scheda solo `doi`/`url`.
-- `.gitattributes` tratta `*.pdf`, `*.pla`, `*.png`, `*.jpg` e `*.xlsx` come binari. Per file grandi è possibile
+- `.gitattributes` tratta `*.pdf`, `*.pla`, `*.png`, `*.jpg`, `*.xlsx` e `*.ico` come binari. Per file grandi è possibile
   attivare **Git LFS** (opzionale) togliendo il commento alla riga
   `# *.pdf filter=lfs diff=lfs merge=lfs -text` in `.gitattributes` ed eseguendo `git lfs install`
   e `git lfs track "*.pdf"` prima di aggiungere i file.
@@ -393,6 +401,9 @@ Input, Dipendenze, Note. Esempio:
   `strategia: aggiungi BLL1992 MA Crossover con HoldDays per VMA/FMA`. Dettagli, se servono, nel
   corpo dopo una riga vuota.
 - **Catalogo sempre aggiornato.** Ogni commit che tocca una scheda include `CATALOG.md` e
-  `catalog.json` rigenerati; prima del push eseguire `python tools/build_catalog.py --check`.
+  `catalog.json` rigenerati; prima del push eseguire `python tools/build_catalog.py --check`. Su
+  Windows la voce `5 Salva su GitHub (commit + push)` del menu di `avvia.bat` fa questi passi da
+  sola (rigenera il catalogo, `git add -A`, commit con messaggio chiesto all'utente, push); la voce
+  `6 Verifica (test + catalogo)` esegue test e `--check` (vedi [WINDOWS.md](WINDOWS.md)).
 - **Non riscrivere la storia di `main`** (niente `push --force`, `rebase` o `amend` su commit già
   pubblicati); si corregge con un nuovo commit. Vale anche per i PDF caricati per errore (§10).

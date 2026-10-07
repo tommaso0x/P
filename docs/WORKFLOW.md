@@ -12,6 +12,14 @@ L'esempio usato in ogni passo è la catena inclusa nella libreria: Brock, Lakoni
 Suggerimento: ogni comando `new_entry.py` accetta `--dry-run` per vedere cosa verrebbe creato senza
 scrivere nulla, e `--date YYYY-MM-DD` per impostare una data diversa da oggi.
 
+In alternativa ai flag, la **procedura guidata** `python tools/wizard.py` (su Windows: voce
+`3 Nuova voce (procedura guidata)` del menu di `avvia.bat`) fa le stesse domande una alla volta in
+italiano — tipo, nome, fonti e dipendenze scelte da un elenco numerato, tag, sintesi; per le fonti
+autori, anno, tipo, DOI, URL — mostra il comando `new_entry.py` equivalente e lo esegue dopo
+conferma. I passi 2, 4, 5 e 6 qui sotto si possono fare così; il risultato è identico. Il menu di
+`avvia.bat` copre anche i passi 9 (voce `6 Verifica (test + catalogo)`) e 10 (voce `5 Salva su
+GitHub (commit + push)`): vedi [WINDOWS.md](WINDOWS.md).
+
 ## 1. Leggere il paper
 
 Prima lettura completa, segnando: le **regole operative** (quando si compra, quando si vende,
@@ -165,6 +173,10 @@ python tools/build_catalog.py --check    # conferma che tutto è valido e aggior
 python -m unittest discover -s tools/tests -v   # test degli strumenti (facoltativo in locale, obbligatorio in CI)
 ```
 
+Su Windows la voce `6 Verifica (test + catalogo)` del menu di `avvia.bat` esegue test e `--check`;
+la voce `1 Apri il catalogo (pagina web locale)` rigenera il catalogo (anche `catalog.html`, la
+versione come pagina web, locale e ignorata da git) e lo apre nel browser.
+
 Se compaiono righe `ERRORE <percorso>: <messaggio>`, correggere le schede indicate e rilanciare.
 Gli avvisi (`AVVISO ...`: fonte senza implementazioni, voce con `papers: []`, `tested`/`stable`
 senza `multicharts_version`, versioni divergenti tra front matter, `.pl` e changelog, chiave
@@ -183,6 +195,10 @@ git add papers/1992-brock-lakonishok-lebaron-simple-technical-trading-rules \
 git commit -m "fonte: aggiungi BLL 1992 con funzione segnale, indicatore e strategie"
 python tools/build_catalog.py --check && git push -u origin HEAD
 ```
+
+Su Windows la voce `5 Salva su GitHub (commit + push)` del menu di `avvia.bat` fa la stessa cosa
+senza terminale: rigenera il catalogo, `git add -A`, chiede il messaggio di commit (Invio =
+`Aggiornamento libreria <data>`), `git commit` e `git push` sul ramo corrente.
 
 Includere sempre nel commit il catalogo rigenerato, altrimenti la CI fallisce su
 `build_catalog.py --check`. Un ramo e un commit per catena logica (fonte + voci derivate) o per

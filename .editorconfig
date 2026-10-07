@@ -23,6 +23,10 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 
+# Script Windows (cmd.exe e PowerShell): fine riga CRLF, come dichiarato in .gitattributes
+[*.{bat,cmd,ps1}]
+end_of_line = crlf
+
 # Markdown, YAML, JSON
 [*.{md,yml,yaml,json}]
 indent_style = space

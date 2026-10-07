@@ -30,8 +30,12 @@ libreria si tiene il testo del codice (`.pl`) e si incolla nell'editor.
    Se la scheda non lo specifica, per le funzioni di questa libreria il ritorno è numerico e la
    modalità è *series* quando il codice che la richiama usa valori passati della funzione
    (es. `NomeFunzione[1]`), altrimenti *simple*.
-4. Cancellare l'eventuale contenuto proposto dall'editor e **incollare il testo** del file `.pl`
-   (aprirlo con un editor di testo qualsiasi, selezionare tutto, copiare).
+4. Cancellare l'eventuale contenuto proposto dall'editor e **incollare il testo** del file `.pl`.
+   Il modo più rapido è il pulsante **Copia codice** del catalogo come pagina web (`catalog.html`:
+   `python tools/render_html.py --open`, oppure su Windows la voce `1 Apri il catalogo (pagina web
+   locale)` del menu di `avvia.bat`, vedi [WINDOWS.md](WINDOWS.md#il-catalogo-come-pagina-web)):
+   cercare la voce, premere **Copia codice** (compare "Copiato!"), tornare nell'editor e Ctrl+V.
+   In alternativa aprire il `.pl` con un editor di testo qualsiasi, selezionare tutto, copiare.
 5. **Compilare** con il comando `Compile` (menu o barra degli strumenti). Gli errori compaiono nel pannello di
    output in basso con il numero di riga; correggere, ricompilare e, se la correzione è sostanziale,
    riportarla nel `.pl` della libreria (è quello la versione di riferimento).
@@ -145,6 +149,8 @@ Nel catalogo la voce compare con il suffisso `(PowerLanguage.NET)` dopo il nome.
 - Il nome dello studio in MultiCharts = campo `name` della scheda; per le funzioni = nome della
   funzione = nome del file `.pl`.
 - Prima le funzioni, poi indicatori e strategie.
+- Per incollare il codice: **Copia codice** dal catalogo come pagina web (`catalog.html`, voce `1`
+  del menu di `avvia.bat` su Windows o `python tools/render_html.py --open`), poi Ctrl+V nell'editor.
 - Dopo ogni modifica fatta nell'editor: riportarla nel `.pl`, aggiornare `version`/`updated`/
   `## Changelog`, rigenerare il catalogo con `python tools/build_catalog.py`. `CATALOG.md` e
   `catalog.json` non si modificano a mano.
